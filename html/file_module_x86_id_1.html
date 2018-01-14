@@ -41,6 +41,7 @@ document.title = "AAA: ASCII Adjust After Addition (x86 Instruction Set Referenc
 <td class="instruction_set_reference_box">
 <p>Adjusts the sum of two unpacked BCD values to create an unpacked BCD result. The AL register is the implied source and destination operand for this instruction. The AAA instruction is only useful when it follows an ADD instruction that adds (binary addition) two unpacked BCD values and stores a byte result in the AL register. The AAA instruction then adjusts the contents of the AL register to contain the correct 1-digit unpacked BCD result.</p>
 <p>If the addition produces a decimal carry, the AH register increments by 1, and the CF and AF flags are set. If there was no decimal carry, the CF and AF flags are cleared and the AH register is unchanged. In either case, bits 4 through 7 of the AL register are set to 0.</p>
+<p>Contrary to original Intel documentation, the adjustement on modern x86 is done as 16 bit AX = AX + 0x106, thus doing AAA over AX value 0x00FF will result into AX = 0x0205 (not expected 0x0105).</p>
 </td>
 </tr>
 </table>
@@ -53,8 +54,7 @@ document.title = "AAA: ASCII Adjust After Addition (x86 Instruction Set Referenc
 <tr>
 <td class="instruction_set_reference_box">
 <pre><span class="keyword">if</span><span class="operator">(</span><span class="operator">(</span>AL <span class="operator">&amp;</span> <span class="number">0xF</span><span class="operator">)</span> <span class="operator">&gt;</span> <span class="number">9</span> <span class="operator">||</span> AF <span class="operator">==</span> <span class="number">1</span><span class="operator">)</span> {
-	AL <span class="operator">=</span> AL <span class="operator">+</span> <span class="number">6</span><span class="operator">;</span>
-	AH <span class="operator">=</span> AH <span class="operator">+</span> <span class="number">1</span><span class="operator">;</span>
+	AX <span class="operator">=</span> AX <span class="operator">+</span> <span class="number">0x106</span><span class="operator">;</span>
 	AF <span class="operator">=</span> <span class="number">1</span><span class="operator">;</span>
 	CF <span class="operator">=</span> <span class="number">1</span>
 }
